@@ -1,3 +1,5 @@
 target/
 .DS_Store
 TP_JUnit5_Boutique_FR.txt
+lib/
+.vscode/

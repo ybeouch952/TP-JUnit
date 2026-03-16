@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class PanierTest {
 
@@ -52,8 +52,12 @@ class PanierTest {
 	void articleNulDoitLeverException() {
 		Panier panier = new Panier();
 
-		assertThrows(IllegalArgumentException.class,
-			() -> panier.ajouterArticle(null, 1));
+		try {
+			panier.ajouterArticle(null, 1);
+			fail("Une IllegalArgumentException etait attendue");
+		} catch (IllegalArgumentException e) {
+			// Exception attendue
+		}
 	}
 
 	@Test
@@ -61,8 +65,12 @@ class PanierTest {
 		Panier panier = new Panier();
 		Article article = new Article("REF-001", "Stylo", 1.50);
 
-		assertThrows(IllegalArgumentException.class,
-			() -> panier.ajouterArticle(article, 0));
+		try {
+			panier.ajouterArticle(article, 0);
+			fail("Une IllegalArgumentException etait attendue");
+		} catch (IllegalArgumentException e) {
+			// Exception attendue
+		}
 	}
 
 	@Test
@@ -70,24 +78,36 @@ class PanierTest {
 		Panier panier = new Panier();
 		Article article = new Article("REF-001", "Stylo", 1.50);
 
-		assertThrows(IllegalArgumentException.class,
-			() -> panier.ajouterArticle(article, -3));
+		try {
+			panier.ajouterArticle(article, -3);
+			fail("Une IllegalArgumentException etait attendue");
+		} catch (IllegalArgumentException e) {
+			// Exception attendue
+		}
 	}
 
 	@Test
 	void codeReductionVideDoitLeverException() {
 		Panier panier = new Panier();
 
-		assertThrows(IllegalArgumentException.class,
-			() -> panier.appliquerCodeReduction(""));
+		try {
+			panier.appliquerCodeReduction("");
+			fail("Une IllegalArgumentException etait attendue");
+		} catch (IllegalArgumentException e) {
+			// Exception attendue
+		}
 	}
 
 	@Test
 	void codeReductionNulDoitLeverException() {
 		Panier panier = new Panier();
 
-		assertThrows(IllegalArgumentException.class,
-			() -> panier.appliquerCodeReduction(null));
+		try {
+			panier.appliquerCodeReduction(null);
+			fail("Une IllegalArgumentException etait attendue");
+		} catch (IllegalArgumentException e) {
+			// Exception attendue
+		}
 	}
 
 	@Test

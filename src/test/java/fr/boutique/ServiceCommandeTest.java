@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class ServiceCommandeTest {
 
@@ -34,24 +34,36 @@ class ServiceCommandeTest {
 
     @Test
     void panierVideDoitLeverIllegalStateException() {
-        assertThrows(IllegalStateException.class,
-            () -> service.passerCommande(panier, "C1"));
+        try {
+            service.passerCommande(panier, "C1");
+            fail("Une IllegalStateException etait attendue");
+        } catch (IllegalStateException e) {
+            // Exception attendue
+        }
     }
 
     @Test
     void identifiantClientNulDoitLeverException() {
         panier.ajouterArticle(articleTest, 1);
 
-        assertThrows(IllegalArgumentException.class,
-            () -> service.passerCommande(panier, null));
+        try {
+            service.passerCommande(panier, null);
+            fail("Une IllegalArgumentException etait attendue");
+        } catch (IllegalArgumentException e) {
+            // Exception attendue
+        }
     }
 
     @Test
     void identifiantClientVideDoitLeverException() {
         panier.ajouterArticle(articleTest, 1);
 
-        assertThrows(IllegalArgumentException.class,
-            () -> service.passerCommande(panier, ""));
+        try {
+            service.passerCommande(panier, "");
+            fail("Une IllegalArgumentException etait attendue");
+        } catch (IllegalArgumentException e) {
+            // Exception attendue
+        }
     }
 
     @Test
@@ -60,8 +72,12 @@ class ServiceCommandeTest {
         ServiceCommande serviceStockInsuffisant = new ServiceCommande(stockInsuffisant);
         panier.ajouterArticle(articleTest, 2);
 
-        assertThrows(StockInsuffisantException.class,
-            () -> serviceStockInsuffisant.passerCommande(panier, "CLIENT-42"));
+        try {
+            serviceStockInsuffisant.passerCommande(panier, "CLIENT-42");
+            fail("Une StockInsuffisantException etait attendue");
+        } catch (StockInsuffisantException e) {
+            // Exception attendue
+        }
     }
 
     @Test
