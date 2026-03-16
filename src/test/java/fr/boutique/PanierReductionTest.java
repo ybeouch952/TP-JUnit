@@ -1,109 +1,62 @@
 package fr.boutique;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PanierReductionTest {
 
-    @Test
-    void calculerTotalDoitAppliquerLaBonneReductionSansCode() {
+    @ParameterizedTest
+    @CsvSource({
+        "'', 100.0",
+        "REDUC10, 90.0",
+        "REDUC20, 80.0"
+    })
+    void calculerTotalDoitAppliquerLaBonneReduction(String code, double totalAttendu) {
         Panier panier = new Panier();
         Article article = new Article("REF-001", "Classeur", 10.0);
         panier.ajouterArticle(article, 10);
 
-        assertEquals(100.0, panier.calculerTotal(), 0.001);
+        if (code != null && !code.isBlank()) {
+            panier.appliquerCodeReduction(code.trim());
+        }
+
+        assertEquals(totalAttendu, panier.calculerTotal(), 0.001);
     }
 
-    @Test
-    void calculerTotalDoitAppliquerLaBonneReductionAvecReduc10() {
-        Panier panier = new Panier();
-        Article article = new Article("REF-001", "Classeur", 10.0);
-        panier.ajouterArticle(article, 10);
-        panier.appliquerCodeReduction("REDUC10");
-
-        assertEquals(90.0, panier.calculerTotal(), 0.001);
-    }
-
-    @Test
-    void calculerTotalDoitAppliquerLaBonneReductionAvecReduc20() {
-        Panier panier = new Panier();
-        Article article = new Article("REF-001", "Classeur", 10.0);
-        panier.ajouterArticle(article, 10);
-        panier.appliquerCodeReduction("REDUC20");
-
-        assertEquals(80.0, panier.calculerTotal(), 0.001);
-    }
-
-    @Test
-    void reductionDoitFonctionnerAvecPlusieursArticlesEtQuantitesSansCode() {
+    @ParameterizedTest
+    @CsvSource({
+        "'', 46.0",
+        "REDUC10, 41.4",
+        "REDUC20, 36.8"
+    })
+    void reductionDoitFonctionnerAvecPlusieursArticlesEtQuantites(String code, double totalAttendu) {
         Panier panier = new Panier();
         panier.ajouterArticle(new Article("REF-A", "Cahier", 5.0), 4);
         panier.ajouterArticle(new Article("REF-B", "Classeur", 8.0), 2);
         panier.ajouterArticle(new Article("REF-C", "Stylo", 2.0), 5);
 
-        assertEquals(46.0, panier.calculerTotal(), 0.001);
-    }
-
-    @Test
-    void reductionDoitFonctionnerAvecPlusieursArticlesEtQuantitesReduc10() {
-        Panier panier = new Panier();
-        panier.ajouterArticle(new Article("REF-A", "Cahier", 5.0), 4);
-        panier.ajouterArticle(new Article("REF-B", "Classeur", 8.0), 2);
-        panier.ajouterArticle(new Article("REF-C", "Stylo", 2.0), 5);
-        panier.appliquerCodeReduction("REDUC10");
-
-        assertEquals(41.4, panier.calculerTotal(), 0.001);
-    }
-
-    @Test
-    void reductionDoitFonctionnerAvecPlusieursArticlesEtQuantitesReduc20() {
-        Panier panier = new Panier();
-        panier.ajouterArticle(new Article("REF-A", "Cahier", 5.0), 4);
-        panier.ajouterArticle(new Article("REF-B", "Classeur", 8.0), 2);
-        panier.ajouterArticle(new Article("REF-C", "Stylo", 2.0), 5);
-        panier.appliquerCodeReduction("REDUC20");
-
-        assertEquals(36.8, panier.calculerTotal(), 0.001);
-    }
-
-    @Test
-    void ajouterArticleParametreInvalideReferenceNulleDoitLeverException() {
-        Panier panier = new Panier();
-
-        try {
-            Article article = new Article(null, "Produit test", 1.0);
-            panier.ajouterArticle(article, 1);
-            fail("Une IllegalArgumentException etait attendue");
-        } catch (IllegalArgumentException e) {
-            // Exception attendue
+        if (code != null && !code.isBlank()) {
+            panier.appliquerCodeReduction(code.trim());
         }
+
+        assertEquals(totalAttendu, panier.calculerTotal(), 0.001);
     }
 
-    @Test
-    void ajouterArticleParametreInvalideQuantiteNulleDoitLeverException() {
+    @ParameterizedTest
+    @CsvSource(value = {
+        "NULL, 1, 1.0",
+        "REF-001, 0, 1.0",
+        "REF-001, 1, -1.0"
+    }, nullValues = "NULL")
+    void ajouterArticleParametreInvalideDoitLeverException(String reference, int quantite, double prix) {
         Panier panier = new Panier();
 
-        try {
-            Article article = new Article("REF-001", "Produit test", 1.0);
-            panier.ajouterArticle(article, 0);
-            fail("Une IllegalArgumentException etait attendue");
-        } catch (IllegalArgumentException e) {
-            // Exception attendue
-        }
-    }
-
-    @Test
-    void ajouterArticleParametreInvalidePrixNegatifDoitLeverException() {
-        Panier panier = new Panier();
-
-        try {
-            Article article = new Article("REF-001", "Produit test", -1.0);
-            panier.ajouterArticle(article, 1);
-            fail("Une IllegalArgumentException etait attendue");
-        } catch (IllegalArgumentException e) {
-            // Exception attendue
-        }
+        assertThrows(IllegalArgumentException.class, () -> {
+            Article article = new Article(reference, "Produit test", prix);
+            panier.ajouterArticle(article, quantite);
+        });
     }
 }
