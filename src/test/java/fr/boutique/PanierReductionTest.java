@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PanierReductionTest {
 
@@ -42,5 +43,23 @@ class PanierReductionTest {
         }
 
         assertEquals(totalAttendu, panier.calculerTotal(), 0.001);
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        value = {
+            "NULL, 1, 1.0",
+            "REF-001, 0, 1.0",
+            "REF-001, 1, -1.0"
+        },
+        nullValues = "NULL"
+    )
+    void ajouterArticleParametreInvalideDoitLeverException(String reference, int quantite, double prix) {
+        Panier panier = new Panier();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            Article article = new Article(reference, "Produit test", prix);
+            panier.ajouterArticle(article, quantite);
+        });
     }
 }
