@@ -1,0 +1,10 @@
+.git
+.github
+target/
+*.class
+.idea/
+*.iml
+.env
+README.md
+.DS_Store
+mon_projet_cordova/
