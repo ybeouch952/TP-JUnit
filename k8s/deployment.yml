@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: boutique
-          image: ghcr.io/ybeouch952/tp-junit:latest
+          image: nginx:1.25
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
