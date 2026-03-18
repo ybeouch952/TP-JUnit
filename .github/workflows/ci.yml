@@ -35,6 +35,10 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v4
 
+      - name: Calculer le nom d'image en minuscules
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: Connexion a ghcr.io
         uses: docker/login-action@v3
         with:
@@ -47,6 +51,6 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ${{ steps.image.outputs.name }}:latest
+            ${{ steps.image.outputs.name }}:${{ github.sha }}
 
