@@ -18,7 +18,9 @@ jobs:
 
       - name: Calculer le nom d'image en minuscules
         id: image
-        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          echo "name=ghcr.io/${OWNER}/boutique" >> "$GITHUB_OUTPUT"
 
       - name: Extraire le nom du tag
         id: meta
@@ -34,6 +36,8 @@ jobs:
       - name: Build et push avec tag de version
         uses: docker/build-push-action@v5
         with:
+          context: ./boutique-app
+          file: ./boutique-app/Dockerfile
           push: true
           tags: |
             ${{ steps.image.outputs.name }}:${{ steps.meta.outputs.TAG }}
