@@ -17,15 +17,25 @@ spec:
     spec:
       containers:
         - name: boutique
-          image: ghcr.io/ybeouch952/tp-junit:latest
-          imagePullPolicy: Always
+          image: ghcr.io/ybeouch952/boutique:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: boutique-config
-            - secretRef:
-                name: boutique-secret
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
           resources:
             requests:
               cpu: "100m"
