@@ -6,7 +6,7 @@ metadata:
   labels:
     app: boutique
 spec:
-  replicas: 4
+  replicas: 3
   selector:
     matchLabels:
       app: boutique
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: boutique
-          image: nginx:1.25
+          image: ghcr.io/ybeouch952/tp-junit:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
